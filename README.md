@@ -1,2 +1,3 @@
 # TelegramMathOperatorBot
-BOT in Telegram that calcule Math Expression
+
+This Project is a Bot for Telegram that Calculate Math Expressions
