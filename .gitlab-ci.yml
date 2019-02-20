@@ -1,0 +1,44 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  type: build
+  script:
+  - apt-get update -qy
+  - apt-get install -y python-dev python-pip
+  after_script:
+  - pip install -r requirements.txt
+
+test:
+  type: test
+  cache:
+    key: bot-cache
+    policy: push
+    paths:
+    - ./MathOperatorBot
+  artifacts:
+    name: Application_Bot
+    when: always
+    expire_in: 1 hrs
+    paths:
+    - ./MathOperatorBot
+  script:
+  - python MathOperatorBot/__init__.py &
+
+production:
+  type: deploy
+  cache:
+    key: bot-cache
+    policy: pull
+  script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - gem install dpl
+  - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  environment:
+    name: Application_Bot
+    url: https://mathoperatorbot.herokuapp.com/
+  only:
+  - master
